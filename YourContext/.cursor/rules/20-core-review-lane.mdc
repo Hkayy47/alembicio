@@ -1,0 +1,18 @@
+---
+description: Extra requirements when touching the correctness core or cutover path
+globs: alembicio/core/**,alembicio/adapters/**,alembicio/cli.py
+alwaysApply: false
+---
+
+You are in the review lane. Files here implement exactly-once backfill, reconciliation,
+and cutover — the product's entire credibility.
+
+- Keep diffs small and single-purpose; do not combine a core change with refactors.
+- Before declaring done: run `make test` AND `make crash`; paste both summaries.
+- State in your final message: which invariant(s) (I1–I13) the change touches, and
+  which property test or crash scenario now covers it. If none does, write that test
+  first.
+- Flag explicitly that this diff requires the P8 adversarial review (PROMPTS.md) before
+  merge — do not mark the task complete without saying so.
+- Any ordering change around claim → embed → upsert → ledger/checkpoint must include a
+  comment citing I2 and explaining why durability-before-progress still holds.

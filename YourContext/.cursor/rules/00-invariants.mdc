@@ -1,0 +1,26 @@
+---
+description: alembicio project law — always applied
+alwaysApply: true
+---
+
+alembicio = zero-downtime embedding model migration orchestrator. INVARIANTS.md and
+DESIGN.md in the repo root are binding; consult them before non-trivial changes. The
+condensed law:
+
+- Exactly-once EFFECTS via idempotency key (doc_id, content_hash, target_model_id);
+  all vector writes are idempotent upserts; replays must be no-ops (I1).
+- Progress markers commit only after the writes they cover are durable; markers are
+  monotonic (I2). Deletes always win (I3). Updates mark rows dirty via content_hash;
+  stale writes never satisfy a dirty row (I4).
+- Budget counters are monotone, persisted, enforced pre-spend; exhaustion lands in
+  PAUSED_BUDGET at a batch boundary, resumable (I5).
+- Only state transitions listed in DESIGN.md §2; every CLI verb idempotent (I6). Reads
+  are never mixed-space within one query (I7). Mapping mode: provenance="projected",
+  gated on measured held-out recovery, always overwritten by true embeddings (I8).
+- Engineering conventions (I12): output ENTIRE files when modifying; no TODO / no `...`
+  / no placeholder comments — every function complete and runnable; never rename or
+  break released public symbols; new params keyword-only with defaults; type
+  annotations on every signature; docstrings (summary + Args/Returns) on public
+  methods; mapping/ and eval/metrics are NumPy-only (no scipy/sklearn/torch in core).
+- Never weaken, skip, or delete failing tests to get green (I13).
+- Secrets only via env: indirection; destructive verbs dry-run by default (I11).
