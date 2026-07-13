@@ -14,5 +14,11 @@ state/
 report.md
 report.json
 .DS_Store
-.rocketride/
+
+# Local agent session context — keep on disk, never push
 /YourContext/
+/alembicio-phase0-kit/
+IDEA.MD
+.claude/
+.cursor/
+.rocketride/
