@@ -1,0 +1,3 @@
+{"q": "how do I rotate my api credentials", "expect": ["doc_0412"], "k": 10}
+{"q": "refund policy for annual plans", "expect": ["doc_1783"], "k": 10}
+{"q": "postgres connection pool exhausted", "expect": ["doc_0097", "doc_0101"], "k": 10}

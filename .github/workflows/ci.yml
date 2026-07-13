@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: alembicio
+          POSTGRES_PASSWORD: alembicio
+          POSTGRES_DB: alembicio
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U alembicio -d alembicio"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://alembicio:alembicio@localhost:5432/alembicio
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --all-extras
+
+      - name: Lint
+        run: uv run ruff check alembicio tests
+
+      - name: Type check
+        run: uv run mypy alembicio
+
+      - name: Test
+        run: uv run pytest

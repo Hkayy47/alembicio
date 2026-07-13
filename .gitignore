@@ -14,3 +14,4 @@ state/
 report.md
 report.json
 .DS_Store
+.rocketride/
